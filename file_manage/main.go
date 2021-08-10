@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"runtime"
 	"syscall"
@@ -46,6 +47,16 @@ func Exists(path string) bool {
 }
 
 func main() {
+	sigs := make(chan os.Signal, 1)
+	//设置要接收的信号
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-sigs
+		fmt.Println("退出")
+		os.Exit(0)
+	}()
+
 	fmt.Println("请输入源目录路径:")
 	fmt.Scanln(&srcDir)
 	fmt.Println("请输目标路径:")
