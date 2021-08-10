@@ -61,6 +61,14 @@ func main() {
 	fmt.Scanln(&srcDir)
 	fmt.Println("请输目标路径:")
 	fmt.Scanln(&dstDir)
+	if !Exists(srcDir) {
+		fmt.Scanf("源地址不存在: %s\n", srcDir)
+		os.Exit(0)
+	}
+	if !Exists(dstDir) {
+		fmt.Scanf("目标地址不存在: %s\n", dstDir)
+		os.Exit(0)
+	}
 	count := 0
 	filepath.WalkDir(srcDir, func(p string, d fs.DirEntry, err error) error {
 		if d.Type().IsRegular() {
