@@ -89,4 +89,6 @@ func main() {
 		}
 		return nil
 	})
+	fmt.Printf("整理 %d个文件\n", count)
+	fmt.Scanln("完成！")
 }
