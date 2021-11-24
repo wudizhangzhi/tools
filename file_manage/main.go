@@ -12,6 +12,11 @@ import (
 	"time"
 )
 
+/*
+整理文件
+将文件按日志规整
+*/
+
 var (
 	srcDir string
 	dstDir string
