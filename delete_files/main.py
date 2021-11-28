@@ -40,32 +40,34 @@ def run(**kwargs):
 
     print(f"解析地址：{path}")
     to_be_deleted = []
-    for file in os.listdir(path):
-      if file.startswith("."): # 隐藏的
-        continue
-      filepath = os.path.join(path, file)
-      if os.path.isdir(filepath):
-        continue
-      suffix = file.split('.')[-1].lower()
-      size = os.path.getsize(filepath) # 字节 Byte
-      sizeMB = round(size / 1000 / 1000, 2)
-      fd = FD(
-        filepath=filepath,
-        filename=file,
-        size=sizeMB,
-        suffix=suffix
-      )
-      # print(f'文件名: {file} 文件类型: {suffix} 大小: {sizeMB}MB')
-      if suffix not in _type:
-        to_be_deleted.append((fd, "后缀不对"))
-        continue
-      if sizeMB < _size:
-        to_be_deleted.append((fd, f"文件太小: {sizeMB}MB"))
-        continue
-      if _pattern and not re.match(_pattern, file):
-        to_be_deleted.append((fd, f"名称不匹配"))
-        continue
-
+    for dirpath, dirnames, filenames in os.walk(path):
+      for file in filenames:
+        if file.startswith("."): # 隐藏的
+          continue
+        filepath = os.path.join(dirpath, file)
+        if os.path.isdir(filepath):
+          continue
+        suffix = file.split('.')[-1].lower()
+        size = os.path.getsize(filepath) # 字节 Byte
+        sizeMB = round(size / 1000 / 1000, 2)
+        fd = FD(
+          filepath=filepath,
+          filename=file,
+          size=sizeMB,
+          suffix=suffix
+        )
+        # print(f'文件名: {file} 文件类型: {suffix} 大小: {sizeMB}MB')
+        if suffix not in _type:
+          to_be_deleted.append((fd, "后缀不对"))
+          continue
+        if sizeMB < _size:
+          to_be_deleted.append((fd, f"文件太小: {sizeMB}MB"))
+          continue
+        if _pattern and not re.match(_pattern, file):
+          to_be_deleted.append((fd, f"名称不匹配"))
+          continue
+      
+    # 删除操作
     if len(to_be_deleted) > 0:
       total_size = 0
       for fd, reason in to_be_deleted:
@@ -78,8 +80,12 @@ def run(**kwargs):
       print(f"共: {len(to_be_deleted)}个, {total_size_display}")
       confirm = input("请确认是否删除(y/n):")
       if confirm.lower() in ['y', 'yes']:
-        for fullpath, _, _ in to_be_deleted:
-          os.remove(fullpath)
+        for fd in to_be_deleted:
+          os.remove(fd.fullpath)
+        # 清理空文件夹
+        for dirpath, _, filenames in os.walk(path):
+          if len(filenames) == 0:
+            os.rmdir(dirpath)
     else:
       input("没有文件需要删除，回车退出")
     
