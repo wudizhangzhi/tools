@@ -40,8 +40,11 @@ def run(**kwargs):
 
     print(f"解析地址：{path}")
     to_be_deleted = []
+    count = 0
     for dirpath, dirnames, filenames in os.walk(path):
       for file in filenames:
+        count += 1
+        print(f"查询 {count} 个文件", end='\r')
         if file.startswith("."): # 隐藏的
           continue
         filepath = os.path.join(dirpath, file)
@@ -66,7 +69,7 @@ def run(**kwargs):
         if _pattern and not re.match(_pattern, file):
           to_be_deleted.append((fd, f"名称不匹配"))
           continue
-      
+    print("")
     # 删除操作
     if len(to_be_deleted) > 0:
       total_size = 0
