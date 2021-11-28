@@ -62,7 +62,7 @@ def run(**kwargs):
 
     if len(to_be_deleted) > 0:
       for fullpath, filename, reason in to_be_deleted:
-        print(f"删除: {filename}  原因: {reason}")
+        print(f"原因: {reason} 删除: {filename}")
       print(f"共: {len(to_be_deleted)}个")
       confirm = input("请确认是否删除(y/n):")
       if confirm.lower() in ['y', 'yes']:
