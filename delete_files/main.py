@@ -60,7 +60,7 @@ def run(**kwargs):
             fd = FD(filepath=filepath, filename=file, size=sizeMB, suffix=suffix)
             # print(f'文件名: {file} 文件类型: {suffix} 大小: {sizeMB}MB')
 
-            condition_suffix_not_in_type = suffix not in _type
+            condition_suffix_not_in_type = suffix in _type
             condition_size_small = sizeMB < _size
             condition_pattern_not_match = _pattern and not re.match(_pattern, file)
 
